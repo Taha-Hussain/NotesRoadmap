@@ -1,0 +1,52 @@
+
+
+.main-div
+{
+  overflow: auto;
+  height: 100vh;
+
+  .scheduler-div
+  {
+    width: 100%;
+    min-width: 1000px;
+  }
+
+  .day-tile, .label-tile, .header-tile
+  {
+    border: 1px dotted gray;
+    text-align: center;
+  }
+
+  .fs-20
+  {
+    font-size: 20px;
+  }
+
+
+  .mat-grid-list-content
+  {
+    background: white;
+  }
+
+  .mat-grid-list-header
+  {
+    background: rgba(0,0,0,.03);
+  }
+  
+  .day-tile:hover
+  {
+    background: #dcdcdc;
+  }
+
+  .label-select
+  {
+    margin-top: 18px;
+  }
+
+  .week-selector
+  {
+    margin-top: 18px;
+    width: 100%;
+  }
+}
+ 

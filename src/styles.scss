@@ -1,1 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+    --color-1:rgb(54, 184, 235);
+    --color-2:rgb(242, 7, 234);
+    --color-3:rgb(184, 23, 23);
+    --color-4:rgb(67, 247, 43);
+    --color-5:rgb(253, 141, 141);
+    --color-6:rgb(255, 43, 117);
+    --color-6:rgb(17, 196, 157);
+    --color-hover:rgb(17, 114, 49);
+
+    --text-color: #222;
+    --bg-color: #fff;
+    --btn-txt-color: white;
+    --btn-bg-color: rgb(11, 88, 160);
+  }
+  body.dark-theme {
+    --color-1:rgb(43, 43, 43);
+    --color-2:rgb(43, 43, 43);
+    --color-3:rgb(43, 43, 43);
+    --color-4:rgb(43, 43, 43);
+    --color-5:rgb(43, 43, 43);
+    --color-6:rgb(43, 43, 43);
+    --color-6:rgb(43, 43, 43);
+    --color-hover:rgb(255, 255, 255);
+
+    --text-color: #eee;
+    --bg-color: #252222;
+    --btn-txt-color: rgb(46, 43, 43);
+    --btn-bg-color: rgb(20, 211, 195);
+  }
+
+html, body { 
+    height: 100%; 
+}
+
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+.text-left{
+    text-align: left;
+}
+
+.theme-toggle .mat-slide-toggle-bar{
+  margin: 0px 20px;
+}
