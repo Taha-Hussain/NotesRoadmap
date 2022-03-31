@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{receivedData.message}}</h2>
+
+<mat-dialog-content>
+    <p> <b>Title: </b> {{receivedData.note.title}} </p>
+    <p> <b>Start Date: </b> {{receivedData.note.startDate * 1000 | date: 'dd-MM-YYYY'}} </p>
+    <p> <b>Duration: </b> {{receivedData.note.days.length}} </p>
+    <div class="mb-5">
+        <mat-chip-list>
+            <mat-chip *ngFor="let label of receivedData['noteLabels'];">{{label}}</mat-chip>
+        </mat-chip-list>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">No</button>
+    <button mat-raised-button color="primary" (click)="save()">Yes</button>
+</mat-dialog-actions>

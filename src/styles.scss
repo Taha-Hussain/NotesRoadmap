@@ -1,14 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 
 body {
-    --color-1:rgb(54, 184, 235);
-    --color-2:rgb(242, 7, 234);
-    --color-3:rgb(184, 23, 23);
-    --color-4:rgb(67, 247, 43);
-    --color-5:rgb(253, 141, 141);
-    --color-6:rgb(255, 43, 117);
-    --color-6:rgb(17, 196, 157);
+    --color-1:#F44336;
+    --color-1-bg:#E91E63;
+    --color-2:#9C27B0;
+    --color-3:#673AB7;
+    --color-4:#3F51B5;
+    --color-5:#2196F3;
+    --color-6:#03A9F4;
+    --color-7:#009688;
     --color-hover:rgb(17, 114, 49);
+
+
+    --label-color-1:#4CAF50;
+    --label-color-2:#8BC34A;
+    --label-color-3:#CDDC39;
 
     --text-color: #222;
     --bg-color: #fff;
@@ -16,20 +22,43 @@ body {
     --btn-bg-color: rgb(11, 88, 160);
   }
   body.dark-theme {
-    --color-1:rgb(43, 43, 43);
-    --color-2:rgb(43, 43, 43);
-    --color-3:rgb(43, 43, 43);
-    --color-4:rgb(43, 43, 43);
-    --color-5:rgb(43, 43, 43);
-    --color-6:rgb(43, 43, 43);
-    --color-6:rgb(43, 43, 43);
-    --color-hover:rgb(255, 255, 255);
+    --color-1:#F44336;
+    --color-1-bg:#E91E63;
+    --color-2:#9C27B0;
+    --color-3:#673AB7;
+    --color-4:#3F51B5;
+    --color-5:#2196F3;
+    --color-6:#03A9F4;
+    --color-7:#009688;
+    --color-hover:rgb(17, 114, 49);
 
-    --text-color: #eee;
-    --bg-color: #252222;
-    --btn-txt-color: rgb(46, 43, 43);
-    --btn-bg-color: rgb(20, 211, 195);
+
+    --label-color-1:#4CAF50;
+    --label-color-2:#8BC34A;
+    --label-color-3:#CDDC39;
+
+    --text-color: #FFFFFF;
+    --bg-color: #333333;
+    --btn-txt-color: white;
+    --btn-bg-color: rgb(11, 88, 160);
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: 100%;
+      vertical-align: baseline;
+      border: 0;
+      outline: 0;
+      color: #fff;
+    }
   }
+
+ *, *::before, *::after
+{
+    box-sizing: border-box;
+}
 
 html, body { 
     height: 100%; 
@@ -46,4 +75,9 @@ body {
 
 .theme-toggle .mat-slide-toggle-bar{
   margin: 0px 20px;
+}
+
+.full-width
+{
+  width: 100%;
 }

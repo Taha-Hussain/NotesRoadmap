@@ -13,6 +13,14 @@ export class UtilityService {
         return result;
     }
 
+    addBusinessDaysToDate(date: Date, days: number) {
+        date = new Date(date);
+        var day = date.getDay();
+        date = new Date(date.getTime());
+        date.setDate(date.getDate() + days + (day === 6 ? 2 : +!day) + (Math.floor((days - 1 + (day % 6 || 1)) / 5) * 2));
+        return date;
+    }
+
     workingDaysDifference(startDate: Date, endDate: Date) {
         let count = 0;
         let curDate = +startDate;
@@ -43,30 +51,13 @@ export class UtilityService {
     }
 
     getMaxItemCount(arr: number[]) {
-        arr = arr.filter(x => x != undefined);
-        var n = arr.length;
-        //using moore's voting algorithm
-        var res = 0;
-        var count = 1;
-        for (var i = 1; i < n; i++) {
-            if (arr[i] === arr[res]) {
-                count++;
-            } else {
-                count--;
-            }
+        var obj = arr.reduce((acc: any, value: any) => ({
+            ...acc,
+            [value]: (acc[value] || 0) + 1
+        }), {});
 
-            if (count === 0) {
-                res = i;
-                count = 1;
-            }
-        }
-
-        var count = 0;
-        for (var i = 0; i < n; i++) {
-            if (arr[res] && arr[i] === arr[res]) {
-                count++;
-            }
-        }
-        return count;
+        console.log(obj);
+        let values:number[] = Object.values(obj);                
+        return Math.max(...values);
     }
 }

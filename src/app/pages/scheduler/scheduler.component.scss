@@ -1,13 +1,87 @@
 
 
-.main-div
+#print-div
 {
+  display: none;
+}
+
+.main-div
+{  
   overflow: auto;
   height: 100vh;
+  display: -webkit-box;
+  background: var(--bg-color);
+  color: var(--text-color);
+
+  .label-div
+  {
+    width: 5%;
+    display: block;
+    min-width: 50px;
+    .logo
+    {
+      height: 80px;
+    }
+  
+    .date
+    {
+      height: 70px;
+      border: 1px dotted gray;  
+      display: flex;
+      justify-content: center;    
+
+        .date-icon
+        {
+          display: flex;
+          justify-content: center;
+          margin-top: 20px;
+        }
+    }
+
+    
+    .label-text-div
+    {
+      height: 322px;
+      display: flex;
+      border: 1px dotted gray;      
+      // background: black;
+      // color: white;
+      cursor: pointer;
+    }
+
+    .label-color-0
+    {
+      color: white;
+      background:  var(--label-color-1);
+    }
+
+    .label-color-1
+    {
+      color: white;
+      background:  var(--label-color-2);
+    }
+
+    .label-color-2
+    {
+      color: white;
+      background:  var(--label-color-3);
+    }
+
+    .label-text-div .text
+    {      
+      display: flex;
+      justify-content: center;
+      font-size: 18px;
+      writing-mode: vertical-lr;
+      text-orientation: upright;
+      margin-left: 30%;
+      letter-spacing: 10px;
+    }
+  }
 
   .scheduler-div
   {
-    width: 100%;
+    width: 95%;
     min-width: 1000px;
   }
 
@@ -38,7 +112,7 @@
     background: #dcdcdc;
   }
 
-  .label-select
+  .label-select,.language-select
   {
     margin-top: 18px;
   }
@@ -47,6 +121,18 @@
   {
     margin-top: 18px;
     width: 100%;
+  }
+
+  .add-icon
+  {
+    width: 100%;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .date-range, .date-range-input
+  {
+    cursor: pointer;
   }
 }
  

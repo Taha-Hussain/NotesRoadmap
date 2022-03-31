@@ -7,18 +7,20 @@ import { Observable } from 'rxjs';
 })
 export class NetworkService {
 
-  constructor(private httpClient: HttpClient) { 
+  constructor(private httpClient: HttpClient) {
 
   }
- 
-  post<T>(method: string, body: any): Observable<T>
-  {  
+
+  post<T>(method: string, body: any): Observable<T> {
     return this.httpClient.post<T>(environment.apiEndpoint + method, body);
   }
 
-  get<T>(method: string): Observable<T>
-  {  
+  get<T>(method: string): Observable<T> {
     return this.httpClient.get<T>(environment.apiEndpoint + method);
+  }
+
+  put<T>(method: string, body: T): Observable<T> {
+    return this.httpClient.put<T>(environment.apiEndpoint + method, body);
   }
 
 }

@@ -1,5 +1,5 @@
 export interface Note {
-    id: number,
+    id?: number,
     title: string,
     startDate: number,
     endDate: number,

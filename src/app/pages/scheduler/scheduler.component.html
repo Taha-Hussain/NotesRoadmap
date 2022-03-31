@@ -1,11 +1,20 @@
 <div class="main-div">
+  <div class="label-div">
+    <div class="logo">
+
+    </div>
+    <div class="date">
+      <mat-icon class="date-icon">date_range</mat-icon>
+    </div>
+    <div class="label-text-div label-color-{{i}}" *ngFor="let label of filteredLabels; let i = index;">
+      <b class="text">{{label.text | slice:0:8 | uppercase }}</b>
+    </div>
+  </div>
   <div class="scheduler-div">
-    <mat-grid-list cols="6" rowHeight="80">
-      <mat-grid-tile colspan='1'>
-      </mat-grid-tile>
+    <mat-grid-list cols="5" rowHeight="80">
       <mat-grid-tile colspan='1'>
         <mat-form-field appearance="fill" class="label-select">
-          <mat-label>Choose Label</mat-label>
+          <mat-label>{{'CHOOSE_LABEL' | translate}}</mat-label>
           <mat-select [(ngModel)]="selectedLabel" (selectionChange)="filterData()">
             <mat-option [value]="0">All</mat-option>
             <mat-option *ngFor="let label of noteLabels;" [value]="label.id">{{label.text}}</mat-option>
@@ -14,24 +23,36 @@
       </mat-grid-tile>
       <mat-grid-tile colspan='2'>
         <mat-form-field appearance="fill" class="week-selector" (click)="picker.open()">
-          <mat-label>Date Range</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
+          <mat-label>{{'DATE_RANGE' | translate}}</mat-label>
+          <mat-date-range-input class="date-range" [rangePicker]="picker">
             <input matStartDate [(ngModel)]="startDate" placeholder="Start date"
-              (dateChange)="startDateSelection(picker)">
-            <input matEndDate [(ngModel)]="endDate" placeholder="End date" (dateChange)="endDateSelection(picker)">
+              (dateChange)="startDateSelection(picker)" class="date-range-input" readonly>
+            <input matEndDate [(ngModel)]="endDate" placeholder="End date" (dateChange)="endDateSelection(picker)"
+              class="date-range-input" readonly>
           </mat-date-range-input>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker touchUi #picker></mat-date-range-picker>
         </mat-form-field>
       </mat-grid-tile>
       <mat-grid-tile colspan='1'>
-        <!-- <mat-icon>light_mode</mat-icon> <mat-slide-toggle class="theme-toggle" (change)="selectTheme($event)"> <mat-icon>dark_mode</mat-icon></mat-slide-toggle> -->
+        <mat-form-field appearance="fill" class="language-select">
+          <mat-label>Choose Language</mat-label>
+          <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="selectLanguage(selectedLanguage)">
+            <mat-option [value]="'en'">English</mat-option>
+            <mat-option [value]="'de'">Deutsch</mat-option>
+          </mat-select>
+        </mat-form-field>
       </mat-grid-tile>
-      <mat-grid-tile colspan='1'></mat-grid-tile>
+
+      <mat-grid-tile colspan='1'>
+        <mat-icon>light_mode</mat-icon>
+        <mat-slide-toggle class="theme-toggle" (change)="selectTheme($event)">
+          <mat-icon>dark_mode</mat-icon>
+        </mat-slide-toggle>
+      </mat-grid-tile>
     </mat-grid-list>
-    <div class="scheduler-div">
-      <mat-grid-list cols="6" class="" rowHeight="70" class="mat-grid-list-header">
-        <mat-grid-tile class="header-tile"></mat-grid-tile>
+    <div>
+      <mat-grid-list cols="5" class="" rowHeight="70" class="mat-grid-list-header">
         <mat-grid-tile class="header-tile" *ngFor="let day of days;">
           <div>
             <p class="mb-0 fs-20">{{day.value | date: 'dd'}}</p>
@@ -39,12 +60,13 @@
           </div>
         </mat-grid-tile>
       </mat-grid-list>
-      <mat-grid-list *ngFor="let label of filteredLabels; let i = index;" cols="6" class="mat-grid-list-content"
-        rowHeight="315">
+      <mat-grid-list *ngFor="let label of filteredLabels; let i = index;" cols="5" class="mat-grid-list-content"
+        rowHeight="322">
         <div *ngFor="let note of notesJson[label.id]; let j = index;">
-          <app-note-card draggable="true" (drag)="drag($event)" id="id-{{note.id}}-{{label.id}}-{{note.startDay}}" [note]="note" [label]="label"></app-note-card>
+          <app-note-card (edit)="editNote($event)" (delete)="deleteNote($event)" (print)="printNote($event)"
+            draggable="true" (drag)="drag($event)" id="id-{{note.id}}-{{label.id}}-{{note.startDay}}" [note]="note"
+            [label]="label"></app-note-card>
         </div>
-        <mat-grid-tile class="label-tile"><b>{{label.text}}</b></mat-grid-tile>
         <mat-grid-tile id="{{label.id}}-1" class="day-tile" (drop)="drop($event)" (dragover)="allowDrop($event)">
         </mat-grid-tile>
         <mat-grid-tile id="{{label.id}}-2" class="day-tile" (drop)="drop($event)" (dragover)="allowDrop($event)">
@@ -57,4 +79,68 @@
         </mat-grid-tile>
       </mat-grid-list>
     </div>
+  </div>
+
+
+  <div id="print-div" *ngIf="printObj">
+    <table>
+      <tr>
+        <td>
+          <b>Id:</b>
+        </td>
+        <td>
+          {{printObj.id}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Title:</b>
+        </td>
+        <td>
+          {{printObj.noteTitle}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Summary:</b>
+        </td>
+        <td>
+          {{printObj.noteSummary}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Labels:</b>
+        </td>
+        <td>
+          {{printObj.noteLabels}}
+        </td>
+      </tr>
+      <tr *ngIf="printObj.noteStartDate">
+        <td>
+          <b>Start Date:</b>
+        </td>
+        <td>
+          {{printObj.noteStartDate * 1000 | date: 'dd-MM-YYYY'}}
+        </td>
+      </tr>
+      <tr *ngIf="printObj.noteEndDate">
+        <td>
+          <b>End Date:</b>
+        </td>
+        <td>
+          {{printObj.noteEndDate * 1000 | date: 'dd-MM-YYYY'}}
+        </td>
+      </tr>
+      <tr *ngIf="printObj.noteDays">
+        <td>
+          <b>
+            Working Days Duration:
+          </b>
+        </td>
+        <td>
+          {{printObj.noteDays}}
+        </td>
+      </tr>
+    </table>
   </div>

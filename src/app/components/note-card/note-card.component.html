@@ -1,16 +1,36 @@
 <div class="note-item width-{{note.daysCount}} left-{{note.startDay}} top-{{note.count}} card-{{note.count}}">
     <div class="note-card">
         <mat-card class="color-{{note.count}}">
-            <mat-card-title class="mb-0">
+            <mat-icon class="print-icon" (click)="printClick()">print</mat-icon>
+            <mat-icon class="edit-icon" (click)="editClick()">edit</mat-icon>
+            <mat-icon class="delete-icon" (click)="deleteClick()">delete</mat-icon>
+            <mat-card-title class="mt-5 mb-0">
                 <h4 class="text-left note-heading mb-0">
                     <b>({{note.id}}) {{note.title}}</b>
                 </h4>
             </mat-card-title>
             <mat-card-content class="mh-40">
-                <p class="text-left short-summary">
+                <p [ngClass]="{'short-summary': !isExpanded}" class="text-left  mb-0">
                     {{note.summary}}
                 </p>
+                <div *ngIf="isExpanded">
+                    <p class="text-left mb-0 mt-5">
+                        <b>Start Date:</b> {{note.startDate * 1000 | date: 'dd-MM-YYYY'}}
+                    </p>
+                    <p class="text-left mb-0">
+                        <b>Duration:</b> {{note.days.length}}
+                    </p>
+                    <p class="text-left mb-0">
+                        <b>Label:</b> {{note.labelName}}
+                    </p>
+                </div>
+                <div [ngClass]="{'expanded-div': isExpanded}" class="expand-collapse-div"
+                    (click)="toggleExpandCollapse()">
+                    <mat-icon *ngIf="!isExpanded" class="expand-icon">expand_more</mat-icon>
+                    <mat-icon *ngIf="isExpanded" class="collapse-icon">expand_less</mat-icon>
+                </div>
             </mat-card-content>
         </mat-card>
+
     </div>
 </div>

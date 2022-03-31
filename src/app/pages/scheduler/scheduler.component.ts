@@ -2,11 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { Notes } from "src/app/interfaces/Notes";
 import { NoteLabel } from "src/app/interfaces/NoteLabel";
-import { cloneDeep, parseInt } from 'lodash';
+import { cloneDeep, parseInt, update } from 'lodash';
 import { Note } from 'src/app/interfaces/Note';
 import { UtilityService } from 'src/app/services/utility.service';
 import { SchedulerService } from 'src/app/services/scheduler.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatDialog } from '@angular/material/dialog';
+import { NoteDetailsDialogComponent } from 'src/app/components/note-details-dialog/note-details-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmationDialogComponent } from 'src/app/components/confirmation-dialog/confirmation-dialog.component';
+import { AlertDialogComponent } from 'src/app/components/alert-dialog/alert-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-scheduler',
@@ -25,15 +31,32 @@ export class SchedulerComponent implements OnInit {
   startDate: Date;
   endDate: Date;
   selectedLabel: number = 0;
+  selectedLanguage: string = "en";
   days: any = [];
   arrayOfWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  printObj: any;
   constructor(
     private utilityService: UtilityService,
-    private schedulerService: SchedulerService) {
+    private schedulerService: SchedulerService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService) {
+    this.printObj = {
+      noteTitle: "",
+      noteSummary: "",
+      noteLabels: "",
+      noteStartDate: "",
+      noteEndDate: "",
+      noteDays: null,
+    };
   }
 
   selectTheme(event: MatSlideToggleChange): void {
     document.body.classList.toggle("dark-theme");
+  }
+
+  selectLanguage(language: string) {
+    this.translate.use(language);
   }
 
   ngOnInit(): void {
@@ -138,14 +161,22 @@ export class SchedulerComponent implements OnInit {
     var destLabel = ev.target.parentElement.id.split('-').reverse()[1];
 
     var currentItemDays = this.notesJson[idLabel].find((x: any) => x.id == id)['days'];
-    var itemsWithDays = this.notesJson[destLabel].map((x: any) => {
-      return x.days.find(function (day: number) {
-        return currentItemDays.includes(day);
-      })
+
+    var itemsWithDays = this.notesJson[destLabel].map((x: any): number[] => {
+      return x.days.filter((day: number) => {
+        return currentItemDays.includes(day)
+      });
+
     })
 
+    var allItemDays = [];
+    if(itemsWithDays.length)
+    {
+      allItemDays = itemsWithDays.reduce((a: any, b: any) => a.concat(b));
+    }
+
     // CHECK IF THE ITEM IS EXPANDED TO OTHER DAYS IF YES THEN GET THE MAX ITEMS ON OTHER DAYS
-    var currentCount = this.utilityService.getMaxItemCount(itemsWithDays);
+    var currentCount = this.utilityService.getMaxItemCount(allItemDays);
 
     if (currentCount < 3) {
 
@@ -156,11 +187,10 @@ export class SchedulerComponent implements OnInit {
       var obj = this.notesObj['notes'].find((x: Note) => x.id == parseInt(id));
       obj['labels'] = obj['labels'].filter((o) => o != parseInt(idLabel));
       obj['labels'].push(parseInt(destLabel));
-
       this.dataManipulation();
     }
     else {
-      return;
+      this.showAlertDialog("Event can not be adjusted in that label as it already have 3 events scheduled in a single day.");
     }
   }
 
@@ -263,10 +293,162 @@ export class SchedulerComponent implements OnInit {
         }
         obj['count'] = count + 1;
         obj['index'] = this.mainCounter++;
+        obj['labelName'] = this.noteLabels.find(x => x.id == label)['text'];
         this.notesJson[label].push(JSON.parse(JSON.stringify(obj)));
       }
 
     });
+  }
+
+  editNote(note: any) {
+    this.showNoteDialog("Edit", note);
+  }
+
+  deleteNote(note: any) {
+    this.showDeleteDialog(note);
+  }
+
+  printNote(note: any) {
+    this.printWindow(note);
+  }
+
+  printWindow(note: any) {
+
+    var labels = this.noteLabels.filter(x => note.labels.indexOf(x.id) > -1).map(y => y.text).join(', ');
+    this.printObj = {
+      id: note.id,
+      noteTitle: note.title,
+      noteSummary: note.summary,
+      noteLabels: labels,
+      noteStartDate: note.startDate,
+      noteEndDate: note.endDate,
+      noteDays: note.days.length,
+    };
+    setTimeout(() => {
+      var printWindow = window.open('', 'PRINT', 'height=400,width=600');
+      printWindow.document.write('<html><head><title> Print Event </title>');
+      printWindow.document.write('</head><body>');
+      printWindow.document.write(document.getElementById('print-div').innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+      return true;
+    });
+  }
+
+  showDeleteDialog(note: any) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        message: 'Are you sure want to delete?',
+        note: note,
+        noteLabels: this.noteLabels.filter(x => note.labels.indexOf(x.id) > -1).map(y => y.text)
+      },
+      disableClose: true,
+      width: "400px"
+    });
+    dialogRef.afterClosed().subscribe((response: any) => {
+      if (response) {
+        this.notesObjCopy['notes'] = this.notesObjCopy['notes'].filter(x => x.id != response.id);
+        this.notesObj = cloneDeep(this.notesObjCopy);
+        this.filterData();
+
+        this.snackBar.open('Note deleted successfully.', 'Close', {
+          duration: 2000,
+        });
+      }
+    });
+  }
+
+  showAlertDialog(message: string) {
+    const dialogRef = this.dialog.open(AlertDialogComponent, {
+      data: {
+        message: message
+      },
+      disableClose: true,
+      width: "300px"
+    })
+    dialogRef.afterClosed().subscribe((response: any) => {
+
+    });
+  }
+
+  showNoteDialog(state: string, note: Note = null) {
+    const dialogRef = this.dialog.open(NoteDetailsDialogComponent, {
+      data: {
+        state: state,
+        note: note
+      },
+      disableClose: true,
+      width: "400px"
+    });
+    dialogRef.afterClosed().subscribe((updatedNote: any) => {
+      if (updatedNote) {
+        if (updatedNote.id) {
+
+          if (this.checkIfUpdateAllowed(updatedNote)) {
+            this.saveNote(updatedNote);
+            this.snackBar.open('Note updated successfully.', 'Close', {
+              duration: 2000,
+            });
+          }
+          else {
+            this.showAlertDialog("Event can not be adjusted in that label as it already have 3 events scheduled in a single day.");
+          }
+        }
+
+
+      }
+    });
+  }
+
+  checkIfUpdateAllowed(updatedNote: any) {
+
+    var startDate = new Date(updatedNote['startDate'] * 1000);
+    var endDate = new Date(updatedNote['endDate'] * 1000);
+    var daysCount = this.utilityService.workingDaysDifference(startDate, endDate);
+    var startDay = startDate.getDay();
+    var days = this.utilityService.calculateDays(startDay, daysCount);
+
+    // var currentItemDays = this.notesJson[idLabel].find((x: any) => x.id == id)['days'];
+    var currentCount = 0;
+    updatedNote.labels.forEach((label: number) => {
+      var itemsWithDays = this.notesJson[label].map((x: any): number[] => {
+        return x.days.filter((day: number) => {
+          if (x.id != updatedNote.id) {
+            return days.includes(day)
+          }
+          else {
+            return false;
+          }
+        });
+      })
+      var allItemDays = itemsWithDays.reduce((a: any, b: any) => a.concat(b));
+      var value = this.utilityService.getMaxItemCount(allItemDays);
+      if (value > currentCount) {
+        currentCount = value;
+      }
+    });
+
+    // CHECK IF THE ITEM IS EXPANDED TO OTHER DAYS IF YES THEN GET THE MAX ITEMS ON OTHER DAYS
+
+    if (currentCount < 3) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  saveNote(data: Note) {
+    this.schedulerService.postNote(data.id, data).subscribe((response: any) => {
+      if (response) {
+        var noteData = response['noteData'];
+        this.notesObjCopy['notes'][this.notesObjCopy['notes'].findIndex(x => x.id == noteData.id)] = noteData;
+        this.filterData();
+      }
+    })
   }
 
 }
