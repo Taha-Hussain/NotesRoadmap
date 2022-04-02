@@ -24,6 +24,7 @@
     "DELETE_CONFIRMATION":"Sind Sie sicher, dass Sie löschen wollen?",
     "YES":"Ja",
     "NO":"Nein",
+    "OK":"Ok",
     "ALERT":"Alarmierung",
     "NOTE_DELETE_SUCCESS":"Notiz erfolgreich gelöscht.",
     "NOTE_UPDATE_SUCCESS":"Note erfolgreich aktualisiert.",

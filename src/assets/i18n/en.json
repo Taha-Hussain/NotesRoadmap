@@ -24,6 +24,7 @@
     "DELETE_CONFIRMATION":"Are you sure want to delete?",
     "YES":"Yes",
     "NO":"No",
+    "OK":"Ok",
     "ALERT":"Alert",
     "NOTE_DELETE_SUCCESS":"Note deleted successfully.",
     "NOTE_UPDATE_SUCCESS":"Note updated successfully.",
