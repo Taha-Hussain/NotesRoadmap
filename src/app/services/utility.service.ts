@@ -55,8 +55,6 @@ export class UtilityService {
             ...acc,
             [value]: (acc[value] || 0) + 1
         }), {});
-
-        console.log(obj);
         let values:number[] = Object.values(obj);                
         return Math.max(...values);
     }

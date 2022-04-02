@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { Notes } from "src/app/interfaces/Notes";
 import { NoteLabel } from "src/app/interfaces/NoteLabel";
-import { cloneDeep, parseInt, update } from 'lodash';
+import { cloneDeep, parseInt } from 'lodash';
 import { Note } from 'src/app/interfaces/Note';
 import { UtilityService } from 'src/app/services/utility.service';
 import { SchedulerService } from 'src/app/services/scheduler.service';
@@ -138,11 +138,14 @@ export class SchedulerComponent implements OnInit {
       this.notesObj['notes'] = this.notesObj['notes'].filter(x => {
         if (filteredLabelId) {
           return (x.startDate >= this.startDate.getTime() / 1000 && x.startDate <= this.endDate.getTime() / 1000 ||
-            x.endDate >= this.startDate.getTime() / 1000 && x.endDate <= this.endDate.getTime() / 1000) && x.labels.indexOf(filteredLabelId) > -1;
+            x.endDate >= this.startDate.getTime() / 1000 && x.endDate <= this.endDate.getTime() / 1000)  || 
+            x.startDate <= this.startDate.getTime() / 1000 && x.endDate >= this.endDate.getTime() / 1000
+            && x.labels.indexOf(filteredLabelId) > -1;
         }
         else {
           return x.startDate >= this.startDate.getTime() / 1000 && x.startDate <= this.endDate.getTime() / 1000 ||
-            x.endDate >= this.startDate.getTime() / 1000 && x.endDate <= this.endDate.getTime() / 1000
+            x.endDate >= this.startDate.getTime() / 1000 && x.endDate <= this.endDate.getTime() / 1000 || 
+            x.startDate <= this.startDate.getTime() / 1000 && x.endDate >= this.endDate.getTime() / 1000
         }
 
       });
@@ -272,7 +275,6 @@ export class SchedulerComponent implements OnInit {
   }
 
   createNotesJson(obj: any) {
-
     obj.labels.forEach((label: number) => {
       if (this.notesObj['notes'].length && this.notesJson[label]) {
         var selfCount = this.notesJson[label].filter((x: any) => x.startDay == obj.startDay).length;
@@ -330,7 +332,6 @@ export class SchedulerComponent implements OnInit {
   }
 
   printWindow(note: any) {
-
     var labels = this.noteLabels.filter(x => note.labels.indexOf(x.id) > -1).map(y => y.text).join(', ');
     this.printObj = {
       id: note.id,
@@ -411,21 +412,17 @@ export class SchedulerComponent implements OnInit {
             this.showAlertDialog("Event can not be adjusted in that label as it already have 3 events scheduled in a single day.");
           }
         }
-
-
       }
     });
   }
 
   checkIfUpdateAllowed(updatedNote: any) {
-
     var startDate = new Date(updatedNote['startDate'] * 1000);
     var endDate = new Date(updatedNote['endDate'] * 1000);
     var daysCount = this.utilityService.workingDaysDifference(startDate, endDate);
     var startDay = startDate.getDay();
     var days = this.utilityService.calculateDays(startDay, daysCount);
 
-    // var currentItemDays = this.notesJson[idLabel].find((x: any) => x.id == id)['days'];
     var currentCount = 0;
     updatedNote.labels.forEach((label: number) => {
       var itemsWithDays = this.notesJson[label].map((x: any): number[] => {

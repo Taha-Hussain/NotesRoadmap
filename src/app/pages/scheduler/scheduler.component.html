@@ -49,8 +49,8 @@
           <mat-form-field appearance="fill" class="language-select">
             <mat-label>{{'SELECT_LABEL' | translate}}</mat-label>
             <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="selectLanguage(selectedLanguage)">
-              <mat-option [value]="'en'">{{'ENGLISH' | translate | uppercase}}</mat-option>
-              <mat-option [value]="'de'">{{'GERMAN' | translate | uppercase}}</mat-option>
+              <mat-option [value]="'en'">{{'ENGLISH' | uppercase}}</mat-option>
+              <mat-option [value]="'de'">{{'DEUTSCH' | uppercase}}</mat-option>
             </mat-select>
           </mat-form-field>
         </mat-grid-tile>
@@ -97,8 +97,8 @@
         <mat-form-field appearance="fill" class="language-select">
           <mat-label>{{'SELECT_LABEL' | translate}}</mat-label>
           <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="selectLanguage(selectedLanguage)">
-            <mat-option [value]="'en'">{{'ENGLISH' | translate | uppercase}}</mat-option>
-            <mat-option [value]="'de'">{{'GERMAN' | translate | uppercase}}</mat-option>
+            <mat-option [value]="'en'">{{'ENGLISH' | uppercase}}</mat-option>
+            <mat-option [value]="'de'">{{'DEUTSCH' | uppercase}}</mat-option>
           </mat-select>
         </mat-form-field>
       </mat-grid-tile>

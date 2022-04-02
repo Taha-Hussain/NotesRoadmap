@@ -1,9 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Note } from 'src/app/interfaces/Note';
 import { NoteLabel } from 'src/app/interfaces/NoteLabel';
 import { SchedulerService } from 'src/app/services/scheduler.service';
-import { cloneDeep } from 'lodash';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -26,7 +24,6 @@ export class NoteDetailsDialogComponent implements OnInit {
       this.state = data.state;
       if (data.note) {
         this.noteObj = this.loadNoteObj(data.note);
-        // this.noteObj = cloneDeep(data.note);
         this.noteObj['startDate'] = new Date(this.noteObj['startDate'] * 1000);
         this.noteObj['endDate'] = new Date(this.noteObj['endDate'] * 1000);
         this.duration = this.utilityService.workingDaysDifference(this.noteObj['startDate'], this.noteObj['endDate']);
