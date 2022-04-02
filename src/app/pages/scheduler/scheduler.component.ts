@@ -25,7 +25,6 @@ export class SchedulerComponent implements OnInit {
   noteLabels: NoteLabel[];
   filteredLabels: NoteLabel[];
   notesJson: any = [];
-  breakpoint: number;
   mainCounter = 0;
   draggedItemId = "";
   startDate: Date;
@@ -33,8 +32,12 @@ export class SchedulerComponent implements OnInit {
   selectedLabel: number = 0;
   selectedLanguage: string = "en";
   days: any = [];
-  arrayOfWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  arrayOfWeekdays: string[] = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
   printObj: any;
+  isLoading: boolean = false;
+  isPageLoading: boolean = false;
+  isSmall = false;
+  lightTheme: boolean = true;
   constructor(
     private utilityService: UtilityService,
     private schedulerService: SchedulerService,
@@ -49,9 +52,22 @@ export class SchedulerComponent implements OnInit {
       noteEndDate: "",
       noteDays: null,
     };
+    if (window.innerWidth < 800) {
+      this.isSmall = true;
+    }
+  }
+
+  onResize(event: any) {
+    if (event.target.innerWidth < 800) {
+      this.isSmall = true;
+    }
+    else {
+      this.isSmall = false;
+    }
   }
 
   selectTheme(event: MatSlideToggleChange): void {
+    this.lightTheme = !this.lightTheme;
     document.body.classList.toggle("dark-theme");
   }
 
@@ -170,8 +186,7 @@ export class SchedulerComponent implements OnInit {
     })
 
     var allItemDays = [];
-    if(itemsWithDays.length)
-    {
+    if (itemsWithDays.length) {
       allItemDays = itemsWithDays.reduce((a: any, b: any) => a.concat(b));
     }
 
@@ -190,16 +205,18 @@ export class SchedulerComponent implements OnInit {
       this.dataManipulation();
     }
     else {
-      this.showAlertDialog("Event can not be adjusted in that label as it already have 3 events scheduled in a single day.");
+      this.showAlertDialog(this.translate.instant('NOTE_ALLOWED_MESSAGE'));
     }
   }
 
   loadData() {
+    this.isPageLoading = true;
     forkJoin({
       notes: this.schedulerService.getNotes(),
       noteLabels: this.schedulerService.getLabels()
     })
       .subscribe(({ notes, noteLabels }) => {
+        this.isPageLoading = false;
         this.notesObj = notes;
         this.notesObjCopy = notes;
         this.noteLabels = noteLabels;
@@ -301,7 +318,7 @@ export class SchedulerComponent implements OnInit {
   }
 
   editNote(note: any) {
-    this.showNoteDialog("Edit", note);
+    this.showNoteDialog("EDIT", note);
   }
 
   deleteNote(note: any) {
@@ -341,7 +358,7 @@ export class SchedulerComponent implements OnInit {
   showDeleteDialog(note: any) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
-        message: 'Are you sure want to delete?',
+        message: this.translate.instant('DELETE_CONFIRMATION'),
         note: note,
         noteLabels: this.noteLabels.filter(x => note.labels.indexOf(x.id) > -1).map(y => y.text)
       },
@@ -354,7 +371,7 @@ export class SchedulerComponent implements OnInit {
         this.notesObj = cloneDeep(this.notesObjCopy);
         this.filterData();
 
-        this.snackBar.open('Note deleted successfully.', 'Close', {
+        this.snackBar.open(this.translate.instant('NOTE_DELETE_SUCCESS'), 'Close', {
           duration: 2000,
         });
       }
@@ -389,9 +406,6 @@ export class SchedulerComponent implements OnInit {
 
           if (this.checkIfUpdateAllowed(updatedNote)) {
             this.saveNote(updatedNote);
-            this.snackBar.open('Note updated successfully.', 'Close', {
-              duration: 2000,
-            });
           }
           else {
             this.showAlertDialog("Event can not be adjusted in that label as it already have 3 events scheduled in a single day.");
@@ -442,11 +456,16 @@ export class SchedulerComponent implements OnInit {
   }
 
   saveNote(data: Note) {
+    this.isLoading = true;
     this.schedulerService.postNote(data.id, data).subscribe((response: any) => {
       if (response) {
         var noteData = response['noteData'];
         this.notesObjCopy['notes'][this.notesObjCopy['notes'].findIndex(x => x.id == noteData.id)] = noteData;
         this.filterData();
+        this.snackBar.open(this.translate.instant('NOTE_UPDATE_SUCCESS'), 'Close', {
+          duration: 2000,
+        });
+        this.isLoading = false;
       }
     })
   }

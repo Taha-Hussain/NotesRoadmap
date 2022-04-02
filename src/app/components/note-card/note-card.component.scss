@@ -103,15 +103,44 @@
       border-left: 10px solid var(--color-1);
       border-radius: 0px;
     }    
+    
+    .color-1:hover
+    {
+      border-top: 1px solid var(--color-1);
+      border-right: 1px solid var(--color-1);
+      border-bottom: 1px solid var(--color-1);
+      margin-top: -1px;
+      margin-right: -1px;
+    }
+
     .color-2
     {
       border-left: 10px solid var(--color-2);
       border-radius: 0px;
     }
+
+    .color-2:hover
+    {
+      border-top: 1px solid var(--color-2);
+      border-right: 1px solid var(--color-2);
+      border-bottom: 1px solid var(--color-2);
+      margin-top: -1px;
+      margin-right: -1px;
+    }
+
     .color-3
     {
       border-left: 10px solid var(--color-3);
       border-radius: 0px;
+    }
+
+    .color-3:hover
+    {
+      border-top: 1px solid var(--color-3);
+      border-right: 1px solid var(--color-3);
+      border-bottom: 1px solid var(--color-3);
+      margin-top: -1px;
+      margin-right: -1px;
     }
   
     .color-4
@@ -119,17 +148,44 @@
       border-left: 10px solid var(--color-4);
       border-radius: 0px;
     }
+
+    .color-4:hover
+    {
+      border-top: 1px solid var(--color-4);
+      border-right: 1px solid var(--color-4);
+      border-bottom: 1px solid var(--color-4);
+      margin-top: -1px;
+      margin-right: -1px;
+    }
   
     .color-5
     {
       border-left: 10px solid var(--color-5);
       border-radius: 0px;
     }
+
+    .color-5:hover
+    {
+      border-top: 1px solid var(--color-5);
+      border-right: 1px solid var(--color-5);
+      border-bottom: 1px solid var(--color-5);
+      margin-top: -1px;
+      margin-right: -1px;
+    }
   
     .color-6
     {
       border-left: 10px solid var(--color-6);
       border-radius: 0px;
+    }
+
+    .color-6:hover
+    {
+      border-top: 1px solid var(--color-6);
+      border-right: 1px solid var(--color-6);
+      border-bottom: 1px solid var(--color-6);
+      margin-top: -1px;
+      margin-right: -1px;
     }
   
     .color-7
@@ -138,6 +194,15 @@
       border-radius: 0px;
     } 
     
+    .color-7:hover
+    {
+      border-top: 1px solid var(--color-7);
+      border-right: 1px solid var(--color-7);
+      border-bottom: 1px solid var(--color-7);
+      margin-top: -1px;
+      margin-right: -1px;
+    }
+
     .note-heading
     {
       white-space: nowrap;
@@ -160,11 +225,6 @@
       margin-top: 5px !important;
     }
     
-    .mat-card:hover
-    {
-      box-shadow: 5px 5px 20px;
-    }
-  
     .short-summary
     {
       overflow: hidden;
@@ -180,7 +240,6 @@
       top: 5px;
       font-size: 18px;
       cursor: pointer;
-      color: gray;
     }
 
     .delete-icon
@@ -190,7 +249,6 @@
       top: 5px;
       font-size: 18px;
       cursor: pointer;
-      color: gray;
     }
 
     .print-icon
@@ -200,7 +258,6 @@
       top: 5px;
       font-size: 18px;
       cursor: pointer;
-      color: gray;
     }
 
     .expand-collapse-div:hover

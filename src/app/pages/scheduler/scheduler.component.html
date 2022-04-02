@@ -1,7 +1,13 @@
-<div class="main-div">
+<div *ngIf="isLoading" class="bar-div">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+<div *ngIf="isPageLoading" class="spinner-div">
+  <mat-spinner class="spinner"></mat-spinner>
+</div>
+<div *ngIf="!isPageLoading" class="main-div" (window:resize)="onResize($event)">
   <div class="label-div">
-    <div class="logo">
-
+    <div class="menu">
+      <mat-icon *ngIf="isSmall" class="filter-icon" (click)="drawer.toggle()">filter_alt</mat-icon>
     </div>
     <div class="date">
       <mat-icon class="date-icon">date_range</mat-icon>
@@ -10,11 +16,64 @@
       <b class="text">{{label.text | slice:0:8 | uppercase }}</b>
     </div>
   </div>
+
+  <mat-drawer [hidden]="!isSmall" class="drawer" #drawer mode="over" position="end">
+    <div *ngIf="isSmall">
+      <mat-grid-list cols="1" rowHeight="80">
+        <mat-grid-tile>
+          <mat-icon class="close-icon" (click)="drawer.toggle()">close</mat-icon>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field appearance="fill" class="label-select">
+            <mat-label>{{'SELECT_LABEL' | translate}}</mat-label>
+            <mat-select [(ngModel)]="selectedLabel" (selectionChange)="filterData()">
+              <mat-option [value]="0">All</mat-option>
+              <mat-option *ngFor="let label of noteLabels;" [value]="label.id">{{label.text}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field appearance="fill" class="week-selector" (click)="picker.open()">
+            <mat-label>{{'DATE_RANGE' | translate}}</mat-label>
+            <mat-date-range-input class="date-range" [rangePicker]="picker">
+              <input matStartDate [(ngModel)]="startDate" placeholder="Start date"
+                (dateChange)="startDateSelection(picker)" class="date-range-input" readonly>
+              <input matEndDate [(ngModel)]="endDate" placeholder="End date" (dateChange)="endDateSelection(picker)"
+                class="date-range-input" readonly>
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker touchUi #picker></mat-date-range-picker>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field appearance="fill" class="language-select">
+            <mat-label>{{'SELECT_LABEL' | translate}}</mat-label>
+            <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="selectLanguage(selectedLanguage)">
+              <mat-option [value]="'en'">{{'ENGLISH' | translate | uppercase}}</mat-option>
+              <mat-option [value]="'de'">{{'GERMAN' | translate | uppercase}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-icon>light_mode</mat-icon>
+          <mat-slide-toggle [checked]="!lightTheme" class="theme-toggle" (change)="selectTheme($event)">
+            <mat-icon>dark_mode</mat-icon>
+          </mat-slide-toggle>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </mat-drawer>
+
+
   <div class="scheduler-div">
-    <mat-grid-list cols="5" rowHeight="80">
+
+    <div *ngIf="isSmall" class="top-space">
+
+    </div>
+    <mat-grid-list *ngIf="!isSmall" cols="5" rowHeight="80">
       <mat-grid-tile colspan='1'>
         <mat-form-field appearance="fill" class="label-select">
-          <mat-label>{{'CHOOSE_LABEL' | translate}}</mat-label>
+          <mat-label>{{'SELECT_LABEL' | translate}}</mat-label>
           <mat-select [(ngModel)]="selectedLabel" (selectionChange)="filterData()">
             <mat-option [value]="0">All</mat-option>
             <mat-option *ngFor="let label of noteLabels;" [value]="label.id">{{label.text}}</mat-option>
@@ -36,27 +95,27 @@
       </mat-grid-tile>
       <mat-grid-tile colspan='1'>
         <mat-form-field appearance="fill" class="language-select">
-          <mat-label>Choose Language</mat-label>
+          <mat-label>{{'SELECT_LABEL' | translate}}</mat-label>
           <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="selectLanguage(selectedLanguage)">
-            <mat-option [value]="'en'">English</mat-option>
-            <mat-option [value]="'de'">Deutsch</mat-option>
+            <mat-option [value]="'en'">{{'ENGLISH' | translate | uppercase}}</mat-option>
+            <mat-option [value]="'de'">{{'GERMAN' | translate | uppercase}}</mat-option>
           </mat-select>
         </mat-form-field>
       </mat-grid-tile>
 
       <mat-grid-tile colspan='1'>
         <mat-icon>light_mode</mat-icon>
-        <mat-slide-toggle class="theme-toggle" (change)="selectTheme($event)">
+        <mat-slide-toggle [checked]="!lightTheme" class="theme-toggle" (change)="selectTheme($event)">
           <mat-icon>dark_mode</mat-icon>
         </mat-slide-toggle>
       </mat-grid-tile>
     </mat-grid-list>
     <div>
-      <mat-grid-list cols="5" class="" rowHeight="70" class="mat-grid-list-header">
+      <mat-grid-list [cols]="5" rowHeight="70" class="mat-grid-list-header">
         <mat-grid-tile class="header-tile" *ngFor="let day of days;">
           <div>
             <p class="mb-0 fs-20">{{day.value | date: 'dd'}}</p>
-            <b>{{day.text}}</b>
+            <p class="day-name">{{day.text | translate}}</p>
           </div>
         </mat-grid-tile>
       </mat-grid-list>
@@ -80,8 +139,6 @@
       </mat-grid-list>
     </div>
   </div>
-
-
   <div id="print-div" *ngIf="printObj">
     <table>
       <tr>
@@ -139,8 +196,9 @@
           </b>
         </td>
         <td>
-          {{printObj.noteDays}}
+          {{printObj.noteDays}} {{'DAYS' | translate }}
         </td>
       </tr>
     </table>
   </div>
+</div>

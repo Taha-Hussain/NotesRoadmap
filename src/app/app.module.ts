@@ -29,6 +29,9 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { AlertDialogComponent } from './components/alert-dialog/alert-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
@@ -69,6 +72,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSnackBarModule,
     MatChipsModule,
     MatInputModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatSidenavModule,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {

@@ -1,4 +1,43 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@import "@angular/material/theming";
+@include mat.core();
+
+
+$angular-primary: mat.define-palette(mat.$teal-palette, 500, 100, 900);
+$angular-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$angular-warn: mat.define-palette(mat.$red-palette);
+
+$angular-default-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $angular-primary,
+      accent: $angular-accent,
+      warn: $angular-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($angular-default-theme);
+@include mat-form-field-theme($angular-default-theme);
+@include mat-input-theme($angular-default-theme);
+
+$angular-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $angular-primary,
+      accent: $angular-accent,
+      warn: $angular-warn,
+    ),
+  )
+);
+
+.dark-theme {  
+  @include mat.all-component-themes($angular-dark-theme);
+  @include mat-form-field-theme($angular-dark-theme);
+  @include mat-input-theme($angular-dark-theme);
+  color: mat-color($angular-primary, 900-contrast);
+  background-color: #333;
+}
 
 body {
     --color-1:#F44336;
@@ -10,7 +49,7 @@ body {
     --color-6:#03A9F4;
     --color-7:#009688;
     --color-hover:rgb(17, 114, 49);
-
+    --grid-border:#808080;
 
     --label-color-1:#4CAF50;
     --label-color-2:#8BC34A;
@@ -18,41 +57,14 @@ body {
 
     --text-color: #222;
     --bg-color: #fff;
+    --card-bg-color: #FFFFFF;
+    --card-hover-color: #dcdcdc;
     --btn-txt-color: white;
     --btn-bg-color: rgb(11, 88, 160);
   }
+
   body.dark-theme {
-    --color-1:#F44336;
-    --color-1-bg:#E91E63;
-    --color-2:#9C27B0;
-    --color-3:#673AB7;
-    --color-4:#3F51B5;
-    --color-5:#2196F3;
-    --color-6:#03A9F4;
-    --color-7:#009688;
-    --color-hover:rgb(17, 114, 49);
-
-
-    --label-color-1:#4CAF50;
-    --label-color-2:#8BC34A;
-    --label-color-3:#CDDC39;
-
-    --text-color: #FFFFFF;
-    --bg-color: #333333;
-    --btn-txt-color: white;
-    --btn-bg-color: rgb(11, 88, 160);
-
-    button,
-    input,
-    select,
-    textarea {
-      font-family: inherit;
-      font-size: 100%;
-      vertical-align: baseline;
-      border: 0;
-      outline: 0;
-      color: #fff;
-    }
+    --card-hover-color: #616161;
   }
 
  *, *::before, *::after
